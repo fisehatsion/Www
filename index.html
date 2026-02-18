@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>abfm Ultimate 2999</title>
+<style>
+body{
+margin:0;
+background:black;
+color:#00ffff;
+font-family:Orbitron, Arial;
+text-align:center;
+overflow:hidden;
+}
+
+/* Stars background */
+body::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:url("https://i.imgur.com/9QZ7K5C.png");
+animation:moveStars 60s linear infinite;
+opacity:0.3;
+}
+
+@keyframes moveStars{
+from{transform:translateY(0);}
+to{transform:translateY(1000px);}
+}
+
+/* Hologram container */
+#holo{
+display:inline-block;
+position:relative;
+animation:float 4s ease-in-out infinite;
+}
+
+/* Float animation */
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-20px);}
+100%{transform:translateY(0);}
+}
+
+/* Full body */
+#body{
+width:200px;
+height:400px;
+margin:auto;
+position:relative;
+border:2px solid cyan;
+box-shadow:0 0 20px cyan,0 0 60px cyan;
+background:rgba(0,255,255,0.05);
+overflow:hidden;
+}
+
+/* Scan lines */
+#body::after{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:repeating-linear-gradient(
+transparent,
+transparent 2px,
+rgba(0,255,255,0.2) 3px
+);
+animation:scan 4s linear infinite;
+}
+@keyframes scan{
+from{background-position:0 0;}
+to{background-position:0 100px;}
+}
+
+/* Head */
+#head{
+width:150px;
+height:150px;
+border-radius:50%;
+margin:auto;
+margin-top:20px;
+overflow:hidden;
+position:relative;
+border:2px solid cyan;
+}
+
+/* Face image */
+#face{
+width:100%;
+height:100%;
+object-fit:cover;
+opacity:0.9;
+}
+
+/* Eyes */
+.eye{
+width:20px;
+height:20px;
+background:white;
+border-radius:50%;
+position:absolute;
+top:50px;
+}
+#eye1{left:40px;}
+#eye2{right:40px;}
+.pupil{
+width:10px;
+height:10px;
+background:black;
+border-radius:50%;
+margin:5px;
+animation:eyeMove 3s infinite;
+}
+@keyframes eyeMove{
+0%{transform:translate(0);}
+50%{transform:translate(4px);}
+100%{transform:translate(0);}
+}
+
+/* Mouth */
+#mouth{
+width:40px;
+height:8px;
+background:white;
+position:absolute;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+border-radius:10px;
+}
+.talk{
+animation:talk 0.2s infinite;
+}
+@keyframes talk{
+0%{height:8px;}
+50%{height:25px;}
+100%{height:8px;}
+}
+
+/* Torso */
+#torso{
+width:100px;
+height:150px;
+background:rgba(0,255,255,0.2);
+margin:auto;
+margin-top:10px;
+}
+/* Legs */
+#legs{
+width:100px;
+height:80px;
+background:rgba(0,255,255,0.2);
+margin:auto;
+margin-top:10px;
+}
+
+/* Buttons */
+button{
+padding:15px;
+margin:10px;
+background:black;
+color:cyan;
+border:1px solid cyan;
+font-size:16px;
+border-radius:8px;
+}
+
+#chat{
+margin-top:20px;
+font-size:16px;
+background:rgba(0,0,0,0.4);
+padding:10px;
+border-radius:10px;
+max-width:400px;
+margin-left:auto;
+margin-right:auto;
+text-align:left;
+}
+
+/* Mini-game circle */
+#gameCircle{
+width:100px;
+height:100px;
+border-radius:50%;
+background:#2196F3;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+margin:auto;
+margin-top:20px;
+cursor:pointer;
+color:white;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<h1>abfm Ultimate 2999</h1>
+
+<!-- Hologram Avatar -->
+<div id="holo">
+<div id="body">
+
+<div id="head">
+<img id="face" src="https://i.imgur.com/8Km9tLL.png">
+<div class="eye" id="eye1"><div class="pupil"></div></div>
+<div class="eye" id="eye2"><div class="pupil"></div></div>
+<div id="mouth"></div>
+</div>
+
+<div id="torso"></div>
+<div id="legs"></div>
+
+</div>
+</div>
+
+<!-- Upload face -->
+<input type="file" accept="image/*" onchange="changeFace(event)">
+<br>
+
+<!-- Voice AI -->
+<button onclick="listen()">🎤 Talk to abfm</button>
+
+<!-- Mini-game -->
+<h3>Mini Game</h3>
+<p>Score: <span id="score">0</span></p>
+<button onclick="startGame()">Play Game</button>
+<div id="gameCircle" onclick="tapGame()" style="display:none">0</div>
+
+<!-- Chat area -->
+<div id="chat">abfm: Hello human, welcome to year 2999!</div>
+
+<script>
+// ---------------- FACE ----------------
+function changeFace(event){
+let reader=new FileReader();
+reader.onload=function(){
+face.src=reader.result;
+speak("Hologram face updated");
+addChat("abfm: Face updated!");
+}
+reader.readAsDataURL(event.target.files[0]);
+}
+
+// ---------------- AI BRAIN ----------------
+function listen(){
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.start();
+recognition.onresult = function(event){
+let text = event.results[0][0].transcript;
+addChat("You: "+text);
+aiReply(text.toLowerCase());
+}
+}
+
+function aiReply(text){
+let reply="I am abfm, your assistant";
+if(text.includes("hello")) reply="Greetings human!";
+else if(text.includes("name")) reply="My name is abfm";
+else if(text.includes("time")) reply="Current Earth time is "+new Date().toLocaleTimeString();
+else if(text.includes("future")) reply="Welcome to year 2999!";
+speak(reply);
+addChat("abfm: "+reply);
+}
+
+function speak(text){
+let speech=new SpeechSynthesisUtterance(text);
+speech.rate=1; speech.pitch=1.2;
+speechSynthesis.speak(speech);
+mouth.classList.add("talk");
+setTimeout(()=>{mouth.classList.remove("talk");},2000);
+}
+
+function addChat(text){chat.innerHTML+="<br>"+text;}
+
+// ---------------- MINI GAME ----------------
+let score=0;
+let gameStarted=false;
+
+function startGame(){
+gameStarted=true; score=0;
+document.getElementById("score").innerHTML=score;
+document.getElementById("gameCircle").style.display="flex";
+newNumber();
+}
+
+function tapGame(){
+if(!gameStarted) return;
+score++;
+document.getElementById("score").innerHTML=score;
+newNumber();
+}
+
+function newNumber(){
+document.getElementById("gameCircle").innerHTML=Math.floor(Math.random()*9)+1;
+}
+</script>
+
+</body>
+</html>
